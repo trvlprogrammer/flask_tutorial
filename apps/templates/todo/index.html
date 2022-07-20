@@ -1,0 +1,73 @@
+{% extends "header.html" %}
+{% block content %}
+
+    {% if form%}
+    <form method="post" id="postid" action="">
+        {{ form.hidden_tag() }}
+          <div class="form-group">  
+              {{ form.description.label }}<br>
+              {{ form.description(class="form-control") }}          
+            </div>
+              <div class="row">
+                <div class="col">
+                  <div class="form-group">
+                      {{ form.date_todo.label }}<br>
+                      {{ form.date_todo(class="form-control") }} 
+                  </div>                     
+                </div>
+                <div class="col">
+                  <div class="form-group">
+                      {{ form.tags.label }}<br>
+                      {{ form.tags(class="form-control widget-many2many-tags") }} 
+                  </div>     
+                </div>
+              </div>
+              <div class="form-group">
+                <p>{{ form.submit(class="btn btn-secondary btn-sm") }}</p>
+              </div>                     
+      </form>  
+    {% endif %}
+
+    {% for todo in todos %} <!-- for loop todos data  -->
+    <div class="pt-3">
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-7">
+                        <p>{{todo.description}}</p>
+                    </div>
+                    <div class="col-5">
+                        <div class="row float-right">  
+                            <div class="pr-1">
+                                {% if todo.active == True %}
+                                    {% set archive = "Archive" %}
+                                {% else %}
+                                    {% set archive = "Unarchive" %}
+                                {% endif %}
+                                <form name="inactive" id="inactive" method="post" action="{{ url_for('todo.set_active_todo',todo_id=todo.id) }}">
+                                    <input class="btn btn-outline-info btn-sm" type="submit" value="{{archive}}">
+                                </form>                                                                                                
+                            </div>                  
+                            <div>
+                                <form name="delete_todo" id="delete_todo" method="post" action="{{ url_for('todo.delete_todo',todo_id=todo.id) }}">
+                                    <input class="btn btn-outline-danger btn-sm" type="submit" value="Delete">
+                                </form>  
+                            </div>                                             
+                        </div>  
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">                        
+                          <span>{{todo.date_todo}}</span>                        
+                        </div>
+                        <div class="col">
+                            {% for tag in todo.tags %}
+                            <span class="badge badge-info">{{tag.name}}</span>
+                            {% endfor %}
+                    </div>
+                </div>                
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+{% endblock content %}
