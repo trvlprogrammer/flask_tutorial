@@ -1,0 +1,39 @@
+{% extends "header.html" %}
+{% block content %}
+
+    {% if form%}
+    <form method="post" id="postid" action="">
+        {{ form.hidden_tag() }}
+          <div class="form-group">  
+              {{ form.name.label }}<br>
+              {{ form.name(class="form-control") }}          
+            </div>              
+              <div class="form-group">
+                <p>{{ form.submit(class="btn btn-secondary btn-sm") }}</p>
+              </div>                     
+      </form>  
+    {% endif %}
+
+    {% for tag in tags %} <!-- for loop tag data  -->
+    <div class="pt-3">
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-7">
+                        <p>{{tag.name}}</p>
+                    </div>
+                    <div class="col-5">
+                        <div class="row float-right">                             
+                            <div>
+                                <form name="delete_tag" id="delete_tag" method="post" action="{{ url_for('todo.delete_tag',tag_id=tag.id) }}">
+                                    <input class="btn btn-outline-danger btn-sm" type="submit" value="Delete">
+                                </form>  
+                            </div>                                             
+                        </div>  
+                    </div>
+                </div>            
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+{% endblock content %}
