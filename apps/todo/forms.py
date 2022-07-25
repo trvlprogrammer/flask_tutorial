@@ -3,7 +3,6 @@ from wtforms import TextAreaField,SubmitField,SelectMultipleField,DateTimeLocalF
 from wtforms.validators import Optional
 from apps.models import Tag
 
-
 #define class form for todo
 class TodoForm(FlaskForm):
     description = TextAreaField('Description',render_kw={"placeholder": "Todo"})
@@ -12,8 +11,8 @@ class TodoForm(FlaskForm):
     submit = SubmitField('Submit')
 
     #function to set tags value in form, we will search all data from tag table
-    def set_tags_choices(self):        
-        self.tags.choices = [(d.id, d.name) for d in Tag.query.all()]
+    def set_tags_choices(self,current_user):        
+        self.tags.choices = [(d.id, d.name) for d in current_user.tags.all()] #filter data by current user
 
 class TagForm(FlaskForm):
     name = StringField('Tag',render_kw={"placeholder": "Tag"})
