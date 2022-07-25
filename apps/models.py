@@ -1,4 +1,11 @@
-from apps import db
+from apps import db, login
+from flask_login import UserMixin
+from werkzeug.security import generate_password_hash, check_password_hash
+
+# identify current user login
+@login.user_loader
+def load_user(id):
+    return User.query.get(int(id))
 
 #tags table, table many2many relation for todo and tag
 tags = db.Table('tags',
@@ -20,7 +27,7 @@ class Todo(db.Model): #class name will be convert to table name
     def __repr__(self):
         return '<Todo {}>'.format(self.description) #this will represent the data when we browse it, <Todo desscription>
 
-class User(db.Model): 
+class User(UserMixin,db.Model): 
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(64), index=True, unique=True)
     email = db.Column(db.String(120), index=True, unique=True)
@@ -30,6 +37,14 @@ class User(db.Model):
 
     def __repr__(self):
         return '<User {}>'.format(self.username)
+
+    #set hash password
+    def set_password(self, password):
+        self.password = generate_password_hash(password)
+
+    #compare row password and hash password
+    def check_password(self, password):
+        return check_password_hash(self.password, password)
 
 class Tag(db.Model):
     id = db.Column(db.Integer, primary_key=True)
